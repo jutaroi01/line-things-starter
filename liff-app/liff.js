@@ -165,6 +165,7 @@ function liffRequestDevice() {
 
 function liffConnectToDevice(device) {
     device.gatt.connect().then(() => {
+        document.getElementById("user-id").innerText = liff.getProfile().userId;
         document.getElementById("device-name").innerText = device.name;
         document.getElementById("device-id").innerText = device.id;
 
