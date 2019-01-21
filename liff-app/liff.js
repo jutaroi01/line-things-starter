@@ -259,7 +259,9 @@ function liffGetButtonStateCharacteristic(characteristic) {
                     window.restCallingFlag = true;
                     document.getElementById("rest-result").innerText = 'Call REST API';
                     fetch('https://reqres.in/api/users/2').then(response => {
-                        document.getElementById("rest-result").innerText = response.text();
+                        return response.json();
+                    }).then(json => {
+                        document.getElementById("rest-result").innerText = JSON.stringify(json);
                         window.restCallingFlag = false;
                     }).catch(error => {
                         document.getElementById("rest-result").innerText = error;
