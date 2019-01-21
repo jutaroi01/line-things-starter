@@ -255,10 +255,14 @@ function liffGetButtonStateCharacteristic(characteristic) {
             if (val > 0) {
                 // press
                 uiToggleStateButton(true);
+                uiToggleLedButton(true);
+                liffToggleDeviceLedState(true);
             } else {
                 // release
                 uiToggleStateButton(false);
                 uiCountPressButton();
+                uiToggleLedButton(false);
+                liffToggleDeviceLedState(false);
             }
         });
     }).catch(error => {
