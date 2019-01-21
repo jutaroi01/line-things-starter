@@ -255,6 +255,19 @@ function liffGetButtonStateCharacteristic(characteristic) {
             if (val > 0) {
                 // press
                 uiToggleStateButton(true);
+                if (!window.restCallingFlag) {
+                    window.restCallingFlag = true;
+                    document.getElementById("rest-result").innerText = 'Call REST API';
+                    fetch('https://reqres.in/api/users/2').then(response => {
+                        document.getElementById("rest-result").innerText = response.text();
+                        window.restCallingFlag = false;
+                    }).catch(error => {
+                        document.getElementById("rest-result").innerText = error;
+                        window.restCallingFlag = false;
+                    });
+                } else {
+                    document.getElementById("rest-result").innerText = 'Please wait';
+                }
                 uiToggleLedButton(true);
                 liffToggleDeviceLedState(true);
             } else {
