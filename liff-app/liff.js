@@ -129,14 +129,14 @@ function makeErrorMsg(errorObj) {
 // -------------- //
 
 function initializeApp() {
-    liff.init(() => initializeLiff(), error => uiStatusError(makeErrorMsg(error), false));
+    liff.init(() => initializeLiff(), error => uiStatusError("[0]" + makeErrorMsg(error), false));
 }
 
 function initializeLiff() {
     liff.initPlugins(['bluetooth']).then(() => {
         liffCheckAvailablityAndDo(() => liffRequestDevice());
     }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[1]" + makeErrorMsg(error), false);
     });
 }
 
@@ -151,7 +151,7 @@ function liffCheckAvailablityAndDo(callbackIfAvailable) {
             setTimeout(() => liffCheckAvailablityAndDo(callbackIfAvailable), 10000);
         }
     }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[2]" + makeErrorMsg(error), false);
     });;
 }
 
@@ -159,7 +159,7 @@ function liffRequestDevice() {
     liff.bluetooth.requestDevice().then(device => {
         liffConnectToDevice(device);
     }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[3]" + makeErrorMsg(error), false);
     });
 }
 
@@ -168,7 +168,7 @@ function liffConnectToDevice(device) {
         liff.getProfile().then(profile => {
             document.getElementById("user-id").innerText = profile.userId;
         }).catch(error => {
-            uiStatusError(makeErrorMsg(error), false);
+            uiStatusError("[4]" + makeErrorMsg(error), false);
         });
         document.getElementById("device-name").innerText = device.name;
         document.getElementById("device-id").innerText = device.id;
@@ -180,12 +180,12 @@ function liffConnectToDevice(device) {
         device.gatt.getPrimaryService(USER_SERVICE_UUID).then(service => {
             liffGetUserService(service);
         }).catch(error => {
-            uiStatusError(makeErrorMsg(error), false);
+            uiStatusError("[5]" + makeErrorMsg(error), false);
         });
         device.gatt.getPrimaryService(PSDI_SERVICE_UUID).then(service => {
             liffGetPSDIService(service);
         }).catch(error => {
-            uiStatusError(makeErrorMsg(error), false);
+            uiStatusError("[6]" + makeErrorMsg(error), false);
         });
 
         // Device disconnect callback
@@ -208,7 +208,7 @@ function liffConnectToDevice(device) {
 
         device.addEventListener('gattserverdisconnected', disconnectCallback);
     }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[7]" + makeErrorMsg(error), false);
     });
 }
 
@@ -217,7 +217,7 @@ function liffGetUserService(service) {
     service.getCharacteristic(BTN_CHARACTERISTIC_UUID).then(characteristic => {
         liffGetButtonStateCharacteristic(characteristic);
     }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[8]" + makeErrorMsg(error), false);
     });
 
     // Toggle LED
@@ -227,7 +227,7 @@ function liffGetUserService(service) {
         // Switch off by default
         liffToggleDeviceLedState(false);
     }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[9]" + makeErrorMsg(error), false);
     });
 }
 
@@ -241,7 +241,7 @@ function liffGetPSDIService(service) {
             .reduce((output, byte) => output + ("0" + byte.toString(16)).slice(-2), "");
         document.getElementById("device-psdi").innerText = psdi;
     }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[10]" + makeErrorMsg(error), false);
     });
 }
 
@@ -280,7 +280,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
             }
         });
     }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[11]" + makeErrorMsg(error), false);
     });
 }
 
@@ -290,6 +290,6 @@ function liffToggleDeviceLedState(state) {
     window.ledCharacteristic.writeValue(
         state ? new Uint8Array([0x01]) : new Uint8Array([0x00])
     ).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
+        uiStatusError("[12]" + makeErrorMsg(error), false);
     });
 }
