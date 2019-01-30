@@ -31,6 +31,19 @@ function handlerToggleLed() {
     liffToggleDeviceLedState(ledState);
 }
 
+function handlerTest() {
+    liff.sendMessages([
+        {
+            type:'text',
+            text:'thigns test'
+        }
+    ]).then(() => {
+        liff.closeWindow();
+    }).catch((error) => {
+        document.getElementById("rest-result").innerText = error;
+    });
+}
+
 // ------------ //
 // UI functions //
 // ------------ //
