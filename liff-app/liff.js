@@ -32,16 +32,7 @@ function handlerToggleLed() {
 }
 
 function handlerTest() {
-    liff.sendMessages([
-        {
-            type:'text',
-            text:'thigns test'
-        }
-    ]).then(() => {
-        liff.closeWindow();
-    }).catch((error) => {
-        document.getElementById("rest-result").innerText = error;
-    });
+    liff.closeWindow();
 }
 
 // ------------ //
@@ -235,6 +226,7 @@ function liffGetUserService(service) {
 
     // Toggle LED
     service.getCharacteristic(LED_CHARACTERISTIC_UUID).then(characteristic => {
+        // UIボタン操作に応じてcharacteristicの値を書き換える（＝LEDのオンオフを切り替える）ためwindowに格納しておく
         window.ledCharacteristic = characteristic;
 
         // Switch off by default
@@ -263,10 +255,12 @@ function liffGetButtonStateCharacteristic(characteristic) {
     // (Get notified when button state changes)
     characteristic.startNotifications().then(() => {
         characteristic.addEventListener('characteristicvaluechanged', e => {
+            // e.targetの中身はリファレンス読んでもよくわからなかった。おそらくliffではなくjsのオブジェクト。ひとまずおまじないと認識しておく
             const val = (new Uint8Array(e.target.value.buffer))[0];
             if (val > 0) {
                 // press
                 uiToggleStateButton(true);
+                // ここにRESTを叩く処理を入れる。叩く前にフラグを立てて複数回叩かないようにする
                 if (!window.restCallingFlag) {
                     window.restCallingFlag = true;
                     document.getElementById("rest-result").innerText = 'Call REST API';
@@ -288,6 +282,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                 // release
                 uiToggleStateButton(false);
                 uiCountPressButton();
+                // elseでは何もしないようにする
                 uiToggleLedButton(false);
                 liffToggleDeviceLedState(false);
             }
